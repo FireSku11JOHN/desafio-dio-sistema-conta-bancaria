@@ -8,7 +8,9 @@ class Cliente:
         self._contas = []
 
     def realizar_transacao(self, conta, transacao):
-        transacao.registrar(conta)
+        if len(conta.historico.transacoes_do_dia()) >= 10:
+            print('\n@@@ Voçê excedeu o número de transações permitidas para hoje! @@@')
+            return
 
     def adicionar_conta(self,conta):
         self.contas.append(conta)
@@ -128,6 +130,16 @@ class Historico:
                 "data": datetime.now().strftime("%d-%m-%Y %H:%M:%s")
             }
         )
+
+    def transacoes_do_dia(self):
+        data_atual = datetime.utnow().date()
+        transacoes = []
+        for transacao in self._transacoes:
+            data_trancacao = datetime.strptime(transacao["data"], "%d-%m-%Y %H:%M:%S").date()
+            if data_atual == data_trancacao:
+                transacoes.append(transacao)
+        return transacoes
+
 
 class Transacao(ABC):
     @property
